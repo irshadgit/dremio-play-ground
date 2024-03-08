@@ -1,12 +1,9 @@
-# Default values for playground-chart.
+# Default values for child-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-minio-operator:
-  enabled: false
-minio-tenant:
-  enabled: false
+check: "irshad"
 image:
   repository: nginx
   pullPolicy: IfNotPresent

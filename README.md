@@ -26,3 +26,4 @@ Settings for spark accessing minio
     * Service has to be changed to type: ClusterIP
     * CPU and ram settings has to be reduced. Else pods were staying in pending state without scheduling.
     * Minio connectivity issues below extraProperties have worked - https://community.dremio.com/t/s3-like-storage-for-distributed-storage/9212/3?u=irshad-pai
+

@@ -53,6 +53,13 @@ spec:
         {{- end }}
         {{- include "dremio.coordinator.extraVolumeMounts" $ | nindent 8 }}
         env:
+        - name: AWS_ACCESS_KEY
+          value: minio
+        - name: AWS_SECRET_KEY
+          value: minio123
+        - name: AWS_ENDPOINT_URL
+          value: minio123
+        
         - name: DREMIO_MAX_HEAP_MEMORY_SIZE_MB
           value: "{{ template "dremio.coordinator.heapMemory" $ }}"
         - name: DREMIO_MAX_DIRECT_MEMORY_SIZE_MB

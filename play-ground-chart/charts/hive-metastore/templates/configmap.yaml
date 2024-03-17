@@ -21,7 +21,7 @@ data:
 
         <property>
           <name>hive.metastore.warehouse.dir</name>
-          <value>file:///tmp/warehouse</value>
+          <value>s3a://test/ware-house</value>
         </property>
 
         <!--Postgres' connection details -->
@@ -43,7 +43,7 @@ data:
         </property>
         <property>
           <name>datanucleus.autoCreateSchema</name>
-          <value>false</value>
+          <value>true</value>
         </property>
 
         {{- if not (index .Values.conf "hiveSite" "hive.metastore.uris")  }}

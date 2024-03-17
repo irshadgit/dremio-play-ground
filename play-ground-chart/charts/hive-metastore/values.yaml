@@ -27,9 +27,9 @@ image:
   pullPolicy: IfNotPresent
 
 objectStore:
-  externalURI: 
-  accessKey:
-  secretKey: 
+  externalURI: http://minio.play-ground.svc.cluster.local:80
+  accessKey: minio
+  secretKey: minio123
 
 resources: {}
 conf:

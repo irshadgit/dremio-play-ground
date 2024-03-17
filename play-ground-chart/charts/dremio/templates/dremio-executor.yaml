@@ -56,6 +56,10 @@ spec:
         {{- include "dremio.executor.cloudCache.volumeMounts" (list $ $engineName) | nindent 8 }}
         {{- include "dremio.executor.extraVolumeMounts" (list $ $engineName) | nindent 8 }}
         env:
+        - name: AWS_ACCESS_KEY
+          value: minio
+        - name: AWS_SECRET_KEY
+          value: minio123
         - name: DREMIO_MAX_HEAP_MEMORY_SIZE_MB
           value: "{{ template "dremio.executor.heapMemory" (list $ $engineName) }}"
         - name: DREMIO_MAX_DIRECT_MEMORY_SIZE_MB

@@ -1,19 +1,29 @@
 # dremio-play-ground
-Repository for dremio-play-ground.
+Consist of helm chart to install following components.
 
-# Helm Install
+# How to install the chart?
 
-* Add helm repo to install minio-operator
-* helm repo add minio https://operator.min.io/
-* helm install --namespace play-ground --create-namespace minio-operator minio/operator
-* helm list --all-namespaces
-* helm uninstall any-releases
-* helm install --namespace play-ground --create-namespace play-ground ./play-ground-chart
+## Pre-requisites
+* An existing Kubernetes cluster. Version v1.23.3 or later.
+    * You can use [minikube](https://minikube.sigs.k8s.io/docs/start/) to create local kubernetes cluster.
+### Install minio kuberenetes plugin
+* Install kubectl plugin manager [krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/) - 
+* Install minio kubernetes plugin using krew as described [here](https://min.io/docs/minio/kubernetes/upstream/operations/installation.html#install-the-minio-kubernetes-plugin)
+* Verify plugin installation using command `kubectl minio version`
+
+
+## Installing the chart
+## Initialize minio kubernetes operator
+* `kubectl minio init --namespace ${your-namespace}` 
+* [Validate the operator installation](https://min.io/docs/minio/kubernetes/upstream/operations/installation.html#validate-the-operator-installation) 
+## Install play-ground-chart
+* Change directory to root of the git repository.
+* `helm install --namespace ${your-namespace} --create-namespace play-ground ./play-ground-chart`
 * kubectl --namespace play-ground port-forward svc/myminio-console 9443:9443
 * kubectl port-forward svc/myminio-hl 9000 -n minio
 
 
-Issue encoutnered 
+# Issue encoutnered 
 * https based access was failing. Disabled ssl for minio using helm chart.
 Settings for spark accessing minio
     hadoopConf.set("fs.s3a.access.key", "minio")

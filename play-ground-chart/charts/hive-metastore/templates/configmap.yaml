@@ -43,7 +43,7 @@ data:
         </property>
         <property>
           <name>datanucleus.autoCreateSchema</name>
-          <value>true</value>
+          <value>false</value>
         </property>
 
         {{- if not (index .Values.conf "hiveSite" "hive.metastore.uris")  }}

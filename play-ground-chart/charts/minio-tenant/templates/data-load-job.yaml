@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-data-load-job
+spec:
+  template:
+    metadata:
+      name: minio-data-load-pod
+    spec:
+      containers:
+        - name: minio-mc
+          image: minio/mc
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              mc alias set minio http://minio.play-ground.svc.cluster.local:80 "minio" "minio123" --api S3v4
+              mc ls minio
+              mc mb minio/job-bucket
+#              mc cp /path/to/local/helm/folder/ minio/bucket-name
+          env:
+            # - name: MINIO_ACCESS_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: minio-credentials
+            #       key: accesskey
+            # - name: MINIO_SECRET_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: minio-credentials
+            #       key: secretkey
+          readinessProbe:
+            exec:
+              command:
+                - "/bin/sh"
+                - "-c"
+                - |
+                  mc alias set minio http://minio.play-ground.svc.cluster.local:80 "minio" "minio123" --api S3v4
+                  mc --no-color --json ls minio
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+      restartPolicy: Never
+  backoffLimit: 4

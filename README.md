@@ -23,6 +23,10 @@ Consist of helm chart to install following components.
 * kubectl port-forward svc/myminio-hl 9000 -n minio
 
 
+# Things to do
+* Create job for hive metastore creation
+* Completes the S3 bucket creation and sample S3 file loads.
+* Job to loads the Iceberg tables from the S3 loaded data sets.
 # Issue encoutnered 
 * https based access was failing. Disabled ssl for minio using helm chart.
 Settings for spark accessing minio

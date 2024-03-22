@@ -14,10 +14,9 @@ spec:
             - "/bin/sh"
             - "-c"
             - |
-              mc alias set minio http://minio.play-ground.svc.cluster.local:80 "minio" "minio123" --api S3v4
-              mc ls minio
-              mc mb minio/job-bucket
-#              mc cp /path/to/local/helm/folder/ minio/bucket-name
+              mc alias set myminio http://myminio-hl.play-ground.svc.cluster.local:9000 minio minio123 --insecure
+              mc ls myminio
+              mc mb myminio/data-lake
           env:
             # - name: MINIO_ACCESS_KEY
             #   valueFrom:
@@ -35,8 +34,8 @@ spec:
                 - "/bin/sh"
                 - "-c"
                 - |
-                  mc alias set minio http://minio.play-ground.svc.cluster.local:80 "minio" "minio123" --api S3v4
-                  mc --no-color --json ls minio
+                  mc alias set myminio http://myminio-hl.play-ground.svc.cluster.local:9000 minio minio123 --insecure
+                  mc --no-color --json ls myminio
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 5

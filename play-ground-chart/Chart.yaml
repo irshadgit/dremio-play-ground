@@ -26,10 +26,8 @@ appVersion: "1.16.0"
 dependencies:
   # - name: minio-operator
   #   version: "5.0.12"
-  - name: minio-tenant
-    version: "5.0.12"
-  - name: child-chart
-    version: "5.0.12"
+  - name: tenant
+    version: "5.0.14"
   - name: hive-metastore
     version: "0.1.3"
   

@@ -7,6 +7,17 @@ spec:
     metadata:
       name: minio-data-load-pod
     spec:
+      initContainers:
+      - name: wiat-for-minio
+        image: minio/mc
+        command:
+          - sh
+          - -c
+          - |
+            until mc alias set myminio http://{{ .Values.tenant.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.secrets.accessKey}} {{ .Values.secrets.secretKey}} --insecure && mc --no-color --json ls myminio; do
+              echo "Retrying commands..."
+              sleep 5
+            done
       containers:
         - name: minio-mc
           image: minio/mc
@@ -14,32 +25,16 @@ spec:
             - "/bin/sh"
             - "-c"
             - |
-              mc alias set myminio http://myminio-hl.play-ground.svc.cluster.local:9000 minio minio123 --insecure
+              mc alias set myminio http://{{ .Values.tenant.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.secrets.accessKey}} {{ .Values.secrets.secretKey}} --insecure
               mc ls myminio
-              mc mb myminio/data-lake
-          env:
-            # - name: MINIO_ACCESS_KEY
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: minio-credentials
-            #       key: accesskey
-            # - name: MINIO_SECRET_KEY
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: minio-credentials
-            #       key: secretkey
-          readinessProbe:
-            exec:
-              command:
-                - "/bin/sh"
-                - "-c"
-                - |
-                  mc alias set myminio http://myminio-hl.play-ground.svc.cluster.local:9000 minio minio123 --insecure
-                  mc --no-color --json ls myminio
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 5
-            successThreshold: 1
-            failureThreshold: 3
+              mc mb myminio/data-lake-test
+              mc cp -r /data myminio/data-lake-test/
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+      volumes:
+      - name: data-volume
+        configMap:
+          name: data-config-map
       restartPolicy: Never
   backoffLimit: 4

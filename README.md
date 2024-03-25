@@ -10,7 +10,9 @@ Consist of helm chart to install following components.
 * Install kubectl plugin manager [krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/) - 
 * Install minio kubernetes plugin using krew as described [here](https://min.io/docs/minio/kubernetes/upstream/operations/installation.html#install-the-minio-kubernetes-plugin)
 * Verify plugin installation using command `kubectl minio version`
-
+### Install spark operator
+* helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
+* helm install spark-operator spark-operator/spark-operator --namespace ${name_space} --set webhook.enable=true --set image.repository=openlake/spark-operator --set image.tag=3.3.1 --create-namespace
 
 ## Installing the chart
 ## Initialize minio kubernetes operator
@@ -43,4 +45,17 @@ Settings for spark accessing minio
 
 minio mc command
 mc alias set myminio http://myminio-hl.play-ground.svc.cluster.local:9000 minio minio123 --insecure
+
+
+--- Sanchith Issues
+
+* Remove namespace hard coding from metastore config minio
+* Create warehouse & test bucket with proper names
+* Create Hive metastore using REST API
+
+---
+* Auto create Iceberg tables
+* Create Hive metastore using REST API
+* Add airflow
+
 

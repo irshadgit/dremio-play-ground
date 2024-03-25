@@ -28,7 +28,7 @@ spec:
               mc alias set myminio http://{{ .Values.tenant.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.secrets.accessKey}} {{ .Values.secrets.secretKey}} --insecure
               mc ls myminio
               mc mb myminio/data-lake-test
-              mc cp -r /data myminio/data-lake-test/
+              mc cp -r /data/* myminio/data-lake-test/
           volumeMounts:
             - name: data-volume
               mountPath: /data

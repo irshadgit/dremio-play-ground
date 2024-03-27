@@ -7,10 +7,19 @@ spec:
     type: Python
     pythonVersion: "3"
     mode: cluster
-    image: "openlake/sparkjob-demo:3.3.1"
-    imagePullPolicy: IfNotPresent
+    image: openlake/sparkjob-demo
+    imagePullPolicy: "IfNotPresent"
     mainApplicationFile: local:////opt/spark-code/iceberg-load.py
     sparkVersion: "3.3.1"
+    sparkConf:
+      "hive.metastore.uris": "thrift://{{ .Release.Name }}-hive-metastore.{{ .Release.Namespace }}.svc.cluster.local:9083/metastore;user=hive"
+    hadoopConf:
+      "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem"
+      "fs.s3a.path.style.access": "true"
+      "fs.s3a.access.key": "{{ .Values.minio.secrets.accessKey}}"
+      "fs.s3a.secret.key": "{{ .Values.minio.secrets.secretKey}}"
+      "fs.s3a.endpoint": "http://minio.{{ .Release.Name }}.svc.cluster.local:80"
+
     volumes:
       - name: spark-code
         configMap:
@@ -18,7 +27,7 @@ spec:
     restartPolicy:
         type: OnFailure
         onFailureRetries: 3
-        onFailureRetryInterval: 10
+        onFailureRetryInterval: 20
         onSubmissionFailureRetries: 5
         onSubmissionFailureRetryInterval: 20
     driver:
@@ -40,4 +49,3 @@ spec:
         volumeMounts:
           - name: spark-code
             mountPath: /opt/spark-code
-

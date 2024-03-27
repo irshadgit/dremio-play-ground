@@ -409,7 +409,7 @@ distStorage:
     extraProperties: |
       <property>
         <name>fs.s3a.endpoint</name>
-        <value>minio.play-ground.svc.cluster.local:80</value>
+        <value>minio.{{ tpl .Release.Name . }}.svc.cluster.local:80</value>
       </property>
       <property>
         <name>fs.s3a.path.style.access</name>

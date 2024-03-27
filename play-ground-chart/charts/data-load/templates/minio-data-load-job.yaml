@@ -14,7 +14,7 @@ spec:
           - sh
           - -c
           - |
-            until mc alias set myminio http://{{ .Values.tenant.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.secrets.accessKey}} {{ .Values.secrets.secretKey}} --insecure && mc --no-color --json ls myminio; do
+            until mc alias set myminio http://{{ .Values.minio.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.minio.secrets.accessKey}} {{ .Values.minio.secrets.secretKey}} --insecure && mc --no-color --json ls {{ .Values.minio.name}}; do
               echo "Retrying commands..."
               sleep 5
             done
@@ -25,10 +25,10 @@ spec:
             - "/bin/sh"
             - "-c"
             - |
-              mc alias set myminio http://{{ .Values.tenant.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.secrets.accessKey}} {{ .Values.secrets.secretKey}} --insecure
-              mc ls myminio
-              mc mb myminio/data-lake-test
-              mc cp -r /data/* myminio/data-lake-test/
+              mc alias set myminio http://{{ .Values.minio.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.minio.secrets.accessKey}} {{ .Values.minio.secrets.secretKey}} --insecure
+              mc ls {{ .Values.minio.name}}
+              mc mb {{ .Values.minio.name}}/data-lake
+              mc cp -r /data/* {{ .Values.minio.name}}/data-lake/
           volumeMounts:
             - name: data-volume
               mountPath: /data

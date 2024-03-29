@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-data-load-job
+spec:
+  template:
+    metadata:
+      name: minio-data-load-pod
+    spec:
+      initContainers:
+      - name: wiat-for-minio
+        image: minio/mc
+        command:
+          - sh
+          - -c
+          - |
+            until mc alias set myminio http://{{ .Values.minio.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.minio.secrets.accessKey}} {{ .Values.minio.secrets.secretKey}} --insecure && mc --no-color --json ls {{ .Values.minio.name}}; do
+              echo "Retrying commands..."
+              sleep 5
+            done
+      containers:
+        - name: minio-mc
+          image: minio/mc
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              mc alias set myminio http://{{ .Values.minio.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.minio.secrets.accessKey}} {{ .Values.minio.secrets.secretKey}} --insecure
+              mc ls {{ .Values.minio.name}}
+              mc mb {{ .Values.minio.name}}/data-lake
+              mc mb {{ .Values.minio.name}}/{{.Values.spark.warehouseBucket}}
+              mc cp -r /data/* {{ .Values.minio.name}}/data-lake/
+              mc mb {{ .Values.minio.name}}/dremio-dist-storage
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+      volumes:
+      - name: data-volume
+        configMap:
+          name: data-config-map
+      restartPolicy: Never
+  backoffLimit: 4

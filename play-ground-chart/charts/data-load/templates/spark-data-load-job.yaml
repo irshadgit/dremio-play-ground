@@ -1,0 +1,58 @@
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+    name: spark-iceberg
+    namespace: {{ .Release.Namespace }}
+spec:
+    type: Python
+    pythonVersion: "3"
+    mode: cluster
+    image: openlake/sparkjob-demo
+    imagePullPolicy: "IfNotPresent"
+    mainApplicationFile: local:////opt/spark-code/iceberg-load.py
+    sparkVersion: "3.3.1"
+    sparkConf:
+      "hive.metastore.uris": "thrift://{{ .Release.Name }}-hive-metastore.{{ .Release.Namespace }}.svc.cluster.local:9083/metastore;user=hive"
+      "spark.sql.warehouse.dir": "{{.Values.spark.warehouseDir}}"
+      "spark.sql.extensions": "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions"
+      "spark.sql.catalog.spark_catalog": "org.apache.iceberg.spark.SparkSessionCatalog"
+      "spark.sql.catalog.iceberg": "org.apache.iceberg.spark.SparkCatalog"
+      "spark.sql.catalog.iceberg.type": "hive"
+    hadoopConf:
+      "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem"
+      "fs.s3a.path.style.access": "true"
+      "fs.s3a.access.key": "{{ .Values.minio.secrets.accessKey}}"
+      "fs.s3a.secret.key": "{{ .Values.minio.secrets.secretKey}}"
+      "fs.s3a.endpoint": "http://minio.{{ .Release.Namespace }}.svc.cluster.local:80"
+      "hive.metastore.uris": "thrift://{{ .Release.Name }}-hive-metastore.{{ .Release.Namespace }}.svc.cluster.local:9083/metastore;user=hive"
+
+
+    volumes:
+      - name: spark-code
+        configMap:
+          name: spark-code-config-map    
+    restartPolicy:
+        type: OnFailure
+        onFailureRetries: 3
+        onFailureRetryInterval: 20
+        onSubmissionFailureRetries: 5
+        onSubmissionFailureRetryInterval: 20
+    driver:
+        cores: 1
+        coreLimit: "1200m"
+        memory: "512m"
+        labels:
+        
+        serviceAccount: spark-operator-spark
+        volumeMounts:
+          - name: spark-code
+            mountPath: /opt/spark-code
+    executor:
+        cores: 1
+        instances: 1
+        memory: "512m"
+        labels:
+        
+        volumeMounts:
+          - name: spark-code
+            mountPath: /opt/spark-code

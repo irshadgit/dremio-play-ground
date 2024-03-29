@@ -1,0 +1,10 @@
+date,product_name,units_sold,price_per_unit
+2024-03-26,Product A,100,10.50
+2024-03-26,Product B,75,15.75
+2024-03-26,Product C,50,20.25
+2024-03-27,Product A,120,10.50
+2024-03-27,Product B,80,15.75
+2024-03-27,Product C,60,20.25
+2024-03-28,Product A,110,10.50
+2024-03-28,Product B,70,15.75
+2024-03-28,Product C,55,20.25

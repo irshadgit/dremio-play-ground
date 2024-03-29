@@ -107,7 +107,7 @@
     {{ fail "Unrecognized AWS authentication mode." }}
   {{- end -}}
   {{- if $.Values.distStorage.aws.extraProperties -}}
-  {{- $.Values.distStorage.aws.extraProperties | nindent 4 }}
+  {{- tpl $.Values.distStorage.aws.extraProperties . | nindent 4 }}
   {{- end -}}
   {{- end -}}
   {{- if eq $.Values.distStorage.type "azure" }}

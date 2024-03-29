@@ -28,7 +28,9 @@ spec:
               mc alias set myminio http://{{ .Values.minio.name }}-hl.{{ .Release.Namespace }}.svc.cluster.local:9000 {{ .Values.minio.secrets.accessKey}} {{ .Values.minio.secrets.secretKey}} --insecure
               mc ls {{ .Values.minio.name}}
               mc mb {{ .Values.minio.name}}/data-lake
+              mc mb {{ .Values.minio.name}}/{{.Values.spark.warehouseBucket}}
               mc cp -r /data/* {{ .Values.minio.name}}/data-lake/
+              mc mb {{ .Values.minio.name}}/dremio-dist-storage
           volumeMounts:
             - name: data-volume
               mountPath: /data

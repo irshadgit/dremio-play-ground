@@ -2,7 +2,7 @@ apiVersion: "sparkoperator.k8s.io/v1beta2"
 kind: SparkApplication
 metadata:
     name: spark-iceberg
-    namespace: play-ground
+    namespace: {{ .Release.Namespace }}
 spec:
     type: Python
     pythonVersion: "3"
@@ -13,12 +13,19 @@ spec:
     sparkVersion: "3.3.1"
     sparkConf:
       "hive.metastore.uris": "thrift://{{ .Release.Name }}-hive-metastore.{{ .Release.Namespace }}.svc.cluster.local:9083/metastore;user=hive"
+      "spark.sql.warehouse.dir": "{{.Values.spark.warehouseDir}}"
+      "spark.sql.extensions": "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions"
+      "spark.sql.catalog.spark_catalog": "org.apache.iceberg.spark.SparkSessionCatalog"
+      "spark.sql.catalog.iceberg": "org.apache.iceberg.spark.SparkCatalog"
+      "spark.sql.catalog.iceberg.type": "hive"
     hadoopConf:
       "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem"
       "fs.s3a.path.style.access": "true"
       "fs.s3a.access.key": "{{ .Values.minio.secrets.accessKey}}"
       "fs.s3a.secret.key": "{{ .Values.minio.secrets.secretKey}}"
-      "fs.s3a.endpoint": "http://minio.{{ .Release.Name }}.svc.cluster.local:80"
+      "fs.s3a.endpoint": "http://minio.{{ .Release.Namespace }}.svc.cluster.local:80"
+      "hive.metastore.uris": "thrift://{{ .Release.Name }}-hive-metastore.{{ .Release.Namespace }}.svc.cluster.local:9083/metastore;user=hive"
+
 
     volumes:
       - name: spark-code

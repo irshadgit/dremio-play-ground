@@ -1,6 +1,8 @@
 # Default values for playground-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+spark:
+  warehouseDir: "s3a://spark-warehouse/warehouse"
 
 replicaCount: 1
 minio-operator:

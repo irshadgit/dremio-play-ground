@@ -18,7 +18,8 @@ postgresql:
     extendedConfiguration: |-
       password_encryption=md5
 
-
+spark:
+  warehouseDir: "s3a://spark-warehouse/warehouse"
 
 # Settings for the hive metastore stateful set
 image:
@@ -27,7 +28,7 @@ image:
   pullPolicy: IfNotPresent
 
 objectStore:
-  externalURI: http://minio.play-ground.svc.cluster.local:80
+  externalURI: http://minio.{{ .Release.Namespace }}.svc.cluster.local:80
   accessKey: minio
   secretKey: minio123
 

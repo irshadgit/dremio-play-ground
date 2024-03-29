@@ -21,7 +21,7 @@ data:
 
         <property>
           <name>hive.metastore.warehouse.dir</name>
-          <value>s3a://test/ware-house</value>
+          <value>{{.Values.spark.warehouseDir}}</value>
         </property>
 
         <!--Postgres' connection details -->
@@ -84,7 +84,7 @@ data:
 
         <property>
             <name>fs.s3a.endpoint</name>
-            <value>{{- .Values.objectStore.externalURI }}</value>
+            <value>{{- tpl .Values.objectStore.externalURI . }}</value>
         </property>
 
         <property>

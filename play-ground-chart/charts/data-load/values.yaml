@@ -4,6 +4,9 @@
 
 replicaCount: 1
 
+spark:
+  warehouseDir: "s3a://spark-warehouse/warehouse"
+  warehouseBucket: "spark-warehouse"
 minio:
   name: myminio
   secrets:

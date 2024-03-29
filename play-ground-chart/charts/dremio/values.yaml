@@ -386,7 +386,10 @@ distStorage:
   #       Dremio does not support using an K8s service account based IAM role.
   # credentials: If using accessKeySecret authentication, uncomment the credentials section below.
   aws:
-    bucketName: "my-test"
+    # bucketName: "my-test"
+    
+
+    bucketName: "dremio-dist-storage"
     path: "/"
     authentication: "accessKeySecret"
     # If using accessKeySecret for authentication against S3, uncomment the lines below and use the values
@@ -409,7 +412,8 @@ distStorage:
     extraProperties: |
       <property>
         <name>fs.s3a.endpoint</name>
-        <value>minio.{{ tpl .Release.Name . }}.svc.cluster.local:80</value>
+        
+        <value>minio.{{ .Release.Namespace }}.svc.cluster.local:80</value>
       </property>
       <property>
         <name>fs.s3a.path.style.access</name>

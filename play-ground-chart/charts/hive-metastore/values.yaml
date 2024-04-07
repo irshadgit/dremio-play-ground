@@ -3,8 +3,8 @@ postgresql:
   global:
     postgresql:
       auth:
-        username: hive
-        password: hive
+        username: postgres
+        password: postgres
         database: metastore
 
   # For easy deployment don't use persistent volumes. Obviously, not proper

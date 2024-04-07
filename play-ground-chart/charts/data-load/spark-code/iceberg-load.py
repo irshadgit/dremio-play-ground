@@ -20,6 +20,7 @@ def main():
 
     # Writing as table backed by parquet files
     spark.sql("CREATE DATABASE IF NOT EXISTS parquet")
+    spark.sql("DROP TABLE IF EXISTS parquet.daily_product_sales")
     formattedSalesDF.write\
     .format("parquet")\
     .mode("overwrite")\

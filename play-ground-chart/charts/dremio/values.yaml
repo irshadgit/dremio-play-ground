@@ -309,6 +309,7 @@ zookeeper:
   count: 1
 
   volumeSize: 10Gi
+  dataDir: "/zk-data"
 
   # Kubernetes Service Account
   # Uncomment below to use a custom Kubernetes service account for Zookeeper.

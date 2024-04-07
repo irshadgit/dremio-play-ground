@@ -1,6 +1,15 @@
 # Default values for playground-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+airflow:
+# Default airflow repository -- overridden by all the specific images below
+  # defaultAirflowRepository: check
+
+# Default airflow tag to deploy
+  # defaultAirflowTag: "check"
+  # airflowVersion: "2.0.2"
+  defaultAirflowDigest: ~
+
 spark:
   warehouseDir: "s3a://spark-warehouse/warehouse"
 
@@ -85,3 +94,34 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+# For airflow subchart
+# postgresql:
+#   enabled: true
+
+# postgresql:
+#   enabled: true
+#   auth:
+#     enablePostgresUser: true
+#     postgresPassword: postgres
+#     username: ""
+#     password: ""
+
+postgresql:
+  enabled: true
+  global:
+    postgresql:
+      auth:
+        username: postgres
+        password: postgres
+        database: metastore
+
+  # For easy deployment don't use persistent volumes. Obviously, not proper
+  # for production release
+  primary:
+    persistence:
+      enabled: false
+
+    # The apache hive docker image has an jdbc driver that doesn't use the latest encruption
+    # settings. Tell postgres to allow access any way
+    extendedConfiguration: |-
+      password_encryption=md5

@@ -2,13 +2,33 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 airflow:
-# Default airflow repository -- overridden by all the specific images below
-  # defaultAirflowRepository: check
+  # Default airflow repository -- overridden by all the specific images below
+  defaultAirflowRepository: apache/airflow
+  # Default airflow tag to deploy
+  defaultAirflowTag: "2.8.3"
 
-# Default airflow tag to deploy
-  # defaultAirflowTag: "check"
-  # airflowVersion: "2.0.2"
   defaultAirflowDigest: ~
+  # Path where dags are mounted. If using minikube makesure this path is mounted to container from hostPath.
+  dagpvcMountPath: /opt/dags
+  dags:
+  # Where dags volume will be mounted. Works for both persistence and gitSync.
+  # If not specified, dags mount path will be set to $AIRFLOW_HOME/dags
+    mountPath: ~
+    persistence:
+      # Annotations for dags PVC
+      annotations: {}
+      # Enable persistent volume for storing dags
+      enabled: true
+      # Volume size for dags
+      size: 1Gi
+      # If using a custom storageClass, pass name here
+      storageClassName:
+      # access mode of the persistent volume
+      accessMode: ReadOnlyMany
+      ## the name of an existing PVC to use
+      existingClaim: dag-load-pvc
+      ## optional subpath for dag volume mount
+      subPath: ~
 
 spark:
   warehouseDir: "s3a://spark-warehouse/warehouse"

@@ -73,19 +73,28 @@ Consist of helm chart to install following components.
     * Click save
 
 ## Deploying DAGs to Airflow
-* DAGs can be deployed to airflow via Docker Image.
-* Docker image should be build and tagged using minikube. To make it available inside minikube docker registry.
-### Building Docker Image with Airflow DAGs
-* Change directory to `./orchestration`
-* Write DAGs under `dags` folder.
-* Build the image using minikube and push to minikube docker registry with teh command `minikube build image -t ${repository}:${tag} .`
-* Update the Image repository and tag in the root `play-ground-chart/values.yaml` file of the helm chart. Via the following values keys.
+
+* DAGs can be deployed to airflow using the method specified (here)[https://airflow.apache.org/docs/helm-chart/stable/manage-dags-files.html#mounting-dags-from-an-externally-populated-pvc].
+* We will be creating a PVC mounting the DAG files. This is done via the manifest files in [dag-pvc](play-ground-chart/charts/airflow/templates/dag-pvc/).
+* Airflow chart values file parameter will be set to load DAGs from this PVC. This is done by overriding airflow values file entries in [values.yaml](play-ground-chart/values.yaml). Using variable `airflow.dags`.
+* If you are running K8s in minikube you can mount host DAG folder to the minikube container by specifying the mount path in start command for example `minikube start --mount --mount-string="${absolute-path-to-dag-folder}:/opt/dags" --cpus 4`. In this command we are mounting files under host path folder to `/opt/dags` folder of minikube K8s container.
+* You can use [this](orchestration/dags/sample_dag.py) file as sample DAG file.
+* This will be mounted as PVC and configure this PVC to be used as dag folder in airflow in [values.yaml](play-ground-chart/values.yaml).
+* If you are changing the mount path to different location change `airflow.dagpvcMountPath` value in [values.yaml](play-ground-chart/values.yaml).
+* Once you make airflow up and running with this configuration you will see DAGs inside your local path gets loaded in airflow. Verify this by port forwarding airflow-webserver and loading the airflow UI. Check [port-forward](#port-forward-dremio--minio-services) section above.
+* For getting the changes you make in DAG files wait for 5 minute or restart Airflow scheduler pod ( The pod with this name format `${release-name}-scheduler*`).
+
+### Customizing Airflow Docker Image
+
+* Define your Dockerfile. Example can be seen [here](orchestration/Dockerfile).
+* If you are using minikube K8s cluster. Build the image using minikube and push to minikube docker registry with the command `minikube build image -t ${repository}:${tag} .`
+* Update the Image repository and tag in the [values.yaml](play-ground-chart/values.yaml)  file. Via the following values.
 ```yaml
 defaultAirflowRepository: ${repository}
 defaultAirflowTag: "${imageTag}"
 airflowVersion: "${airflow-version}"
 ```
-* Once this is done uninstall & install the helm chart again. Now DAGs will appear in airflow.
+* Once this is done uninstall & install the helm chart again. Now all airflow components will be loaded from the custom docker image.
 
 # Things to do
 * Create job for hive metastore creation

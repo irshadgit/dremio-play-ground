@@ -11,8 +11,8 @@ Consist of helm chart to install following components.
 * Install minio kubernetes plugin using krew as described [here](https://min.io/docs/minio/kubernetes/upstream/operations/installation.html#install-the-minio-kubernetes-plugin)
 * Verify plugin installation using command `kubectl minio version`
 ### Install spark operator
-* helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
-* helm install spark-operator spark-operator/spark-operator --namespace ${name_space} --set webhook.enable=true --set image.repository=openlake/spark-operator --set image.tag=3.3.1 --create-namespace
+* `helm repo add spark-operator https://kubeflow.github.io/spark-operator`
+* `helm install my-release spark-operator/spark-operator --namespace spark-operator --create-namespace`
 * Verify spark operator is installed properly by checking the operator pod with the command `kubectl get pods -n ${namespace} | grep spark-operator` this should list the spark-operator pod and status should be `Running` state.
 
 ## Installing the chart
